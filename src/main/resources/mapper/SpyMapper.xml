@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.spy.mapper.SpyMapper">
+    <select id="find2" resultType="Map">
+        select s.city, s.datetime, s.model_type,s.number,s.type
+        from spy s
+        <where>
+            <if test="city != null and city != ''">
+               and s.city = #{city}
+            </if>
+            <if test="modelType != null and modelType != ''">
+              and  s.model_type = #{modelType}
+            </if>
+            <if test="datetime != null and datetime != ''">
+              and  s.datetime = #{datetime}
+            </if>
+        </where>
+        order by  s.datetime, s.model_type,s.city
+    </select>
+
+    <select id="find" resultType="Map">
+        select s.city, s.datetime, s.model_type,group_concat(s.number) 'number',group_concat(s.type) 'type'
+        from spy s
+        <where>
+            <if test="city != null and city != ''">
+                and s.city = #{city}
+            </if>
+            <if test="modelType != null and modelType != ''">
+                and  s.model_type = #{modelType}
+            </if>
+            <if test="datetime != null and datetime != ''">
+                and  s.datetime = #{datetime}
+            </if>
+        </where>
+        group by  s.datetime, s.model_type,s.city
+        order by s.datetime, s.model_type,s.city
+    </select>
+</mapper>
