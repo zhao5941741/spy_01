@@ -38,6 +38,7 @@ public class SpyServiceImpl extends ServiceImpl<SpyMapper, Spy> implements SpySe
             String city = cityList.get(i);
             JSONObject jsonObject = new JSONObject();
             for (Map<String, Object> map : mapList) {
+                System.out.println(6666);
                 String city_code = map.get("model_type").toString();
                 if (city_code.equals(city)) {
                     String model = map.get("city").toString();
