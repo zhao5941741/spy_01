@@ -4,11 +4,12 @@ package com.example.spy.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.example.spy.entity.Spy;
 import com.example.spy.service.SpyService;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.example.spy.utils.ExcelUtil;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +23,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/spy")
+@CrossOrigin
 public class SpyController {
     @Resource
     SpyService spyService;
@@ -38,6 +40,30 @@ public class SpyController {
     @RequestMapping("/find3")
     public JSONObject find3(@RequestBody Spy spy) {
         return spyService.find3(spy);
+    }
+
+    @RequestMapping("importExcel")
+    public JSONObject importExcel(@RequestParam MultipartFile file) {
+        JSONObject result = new JSONObject();
+        try {
+            List<Map<String, Object>> list = ExcelUtil.excelToList(file);
+            result.put("data",list);
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        result.put("success", false);
+        return result;
+    }
+    @RequestMapping("exportExcle")
+    public void exportExcle(@RequestBody Map<String,Object> data, HttpServletResponse response)  {
+        System.out.println(data.get("data"));
+        List<Map<String,Object>> mapList = (List<Map<String, Object>>) data.get("data");
+//        for (Map<String, Object> map : mapList) {
+//            map.remove("校对值");
+//            map.remove("初始化时间");
+//        }
+        ExcelUtil.exportToExcel(response,"导出Excel", mapList);
     }
 }
 
